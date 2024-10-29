@@ -8,8 +8,8 @@ from density import rho_z
 def plot_MFL_and_rho_CS(x_N, y_N, z_N,
                         x_S, y_S, z_S, 
                         mask_CS_N, mask_CS_S,
-                        r_0, H, rho_0, disk = False,
-                        cb_title = r'$\rho$ (kg.cm$^{-3}$)',
+                        r_0, H, rho_0, disk = False, torus = False,
+                        cb_title = r'$\rho$ (kg.cm$^{-3}$)'
                         ):
 
 
@@ -26,8 +26,8 @@ def plot_MFL_and_rho_CS(x_N, y_N, z_N,
 
 
 
-    rho_CS_N = rho_z(x_N[mask_CS_N], y_N[mask_CS_N], z_N[mask_CS_N], r_0, H, rho_0, disk=disk)
-    rho_CS_S = rho_z(x_S[mask_CS_S], y_S[mask_CS_S], z_S[mask_CS_S], r_0, H, rho_0, disk=disk)
+    rho_CS_N = rho_z(x_N[mask_CS_N], y_N[mask_CS_N], z_N[mask_CS_N], r_0, H, rho_0, disk = disk, torus = torus)
+    rho_CS_S = rho_z(x_S[mask_CS_S], y_S[mask_CS_S], z_S[mask_CS_S], r_0, H, rho_0, disk = disk, torus = torus)
     rho_CS_vals = numpy.concatenate([rho_CS_N, rho_CS_S])
     
     
