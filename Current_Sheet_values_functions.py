@@ -23,7 +23,8 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
                                    rotation_rate =  0.0098,
                                    equatorial_radius_lim = 10*71492e3,
                                    R_p = 71492e3,
-                                   no_CS_calculation = False
+                                   delta_L =1,
+                                   no_CS_calculation = False,
                                    ):
 
     m_e = 9.109e-31 # kg
@@ -48,8 +49,21 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
         (x_S,y_S,z_S) = spherical_to_cartesian(r_S, theta_S_transformed, phi_S)
 
     v_array = numpy.sqrt(2*E_array / m_e)
-    for v in v_array:
-        for z_lim_N in z_lim_N_array: 
+
+    # Outputs
+    H_array = numpy.zeros((v_array.shape[0], z_lim_N_array.shape[0]))
+    rho_0_array = numpy.zeros((v_array.shape[0], z_lim_N_array.shape[0]))
+    rho_at_Moon_array = numpy.zeros((v_array.shape[0], z_lim_N_array.shape[0]))
+    n_0_ions_array = numpy.zeros((v_array.shape[0], z_lim_N_array.shape[0]))
+    n_0_electrons_array = numpy.zeros((v_array.shape[0], z_lim_N_array.shape[0]))
+    longitude_TEB_array = numpy.zeros((v_array.shape[0], z_lim_N_array.shape[0]))
+    longitude_MAW_array = numpy.zeros((v_array.shape[0], z_lim_N_array.shape[0]))
+    n_at_Moon_ions_array = numpy.zeros((v_array.shape[0], z_lim_N_array.shape[0]))
+    n_at_Moon_electrons_array = numpy.zeros((v_array.shape[0], z_lim_N_array.shape[0]))
+    
+    
+    for i_v, v in enumerate(v_array):
+        for i_zlim_N, z_lim_N in enumerate(z_lim_N_array): 
                 
             # determination of the MFL section in the CS and outside the CS
             equatorial_radius_N = numpy.sqrt(x_N**2 + y_N**2)
@@ -93,7 +107,7 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
                                 B_total_N, B_total_S,
                                 mask_CS_N, mask_CS_S,
                                 v, rotation_rate, delta_longitude_observed,
-                                disk == disk, torus == torus),
+                                disk, torus, delta_L),
                         method='Nelder-Mead',                         # Optimization method
                         tol=1e-6                                      # Tolerance for convergence
                         )
@@ -114,7 +128,7 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
                                                                         v,
                                                                         rotation_rate,
                                                                         360-phi_N[0],
-                                                                        disk = disk, torus = torus)
+                                                                        disk = disk, torus = torus, delta_L= delta_L)
             delta_longitude_CS_MAW_TEB = numpy.abs(longitude_TEB-longitude_MAW)
 
             m_amu_ions, m_kg_ions, q_mean_ions = (single_ion_population_mass(r_0/R_p))
@@ -122,11 +136,12 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
             ions_density = (rho_0_volumetric_optimized/1e6)/(m_kg_ions)  # as m_i >> m_e we consider that rho_0_volumetric_optimized is ~∑(ions_density*m_ions)
             electrons_density = ions_density*q_mean_ions # needs to have quasi-neutrality between - and + charges
             
-            rho_at_Callisto = rho_z(x_N[0], y_N[0], z_N[0], r_0, H, rho_0_volumetric_optimized, disk=disk, torus = torus)
-            ions_density_at_Callisto = (rho_at_Callisto/1e6)/(m_kg_ions)
-            electrons_density_at_Callisto = ions_density_at_Callisto*q_mean_ions
+            rho_at_Moon = rho_z(x_N[0], y_N[0], z_N[0], r_0, H, rho_0_volumetric_optimized, disk=disk, torus = torus)
+            ions_density_at_Moon = (rho_at_Moon/1e6)/(m_kg_ions)
+            electrons_density_at_Moon = ions_density_at_Moon*q_mean_ions
             if verbose:  
                 print(f'ρ0: {rho_0_volumetric_optimized/1e6:.2E} kg.cm^-3') 
+                print(f'ρ @ Moon: {rho_at_Moon/1e6:.2E} kg.cm^-3') 
                 print(f'n_0_ions: {ions_density:.2E} cm^-3')
                 print(f'n_0_electrons: {electrons_density:.2E} cm^-3')
                 print(f'λ (TEB) from UV measurement: {lambda_observed_TEB:.02f}\n'
@@ -136,7 +151,39 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
                         +f'λ MAW: {longitude_MAW:.02f}°\n'
                         +f'Δλ: {delta_longitude_CS_MAW_TEB:.02f}°')
                 
-                print(f'n_ions @ Callisto: {ions_density_at_Callisto:.2E} cm^-3')
-                print(f'n_electrons @ Callisto: {electrons_density_at_Callisto:.2E} cm^-3')
+                print(f'n_ions @ Moon: {ions_density_at_Moon:.2E} cm^-3')
+                print(f'n_electrons @ Moon: {electrons_density_at_Moon:.2E} cm^-3')
                 print('\n \n \n')
-        
+
+            H_array[i_v, i_zlim_N] = H/R_p
+            rho_0_array[i_v, i_zlim_N] = rho_0_volumetric_optimized/1e6
+            rho_at_Moon_array[i_v, i_zlim_N] = rho_at_Moon/1e6
+            n_0_ions_array[i_v, i_zlim_N] = electrons_density
+            n_0_electrons_array[i_v, i_zlim_N] = electrons_density
+            longitude_TEB_array[i_v, i_zlim_N] = longitude_TEB
+            longitude_MAW_array[i_v, i_zlim_N] = longitude_MAW
+            n_at_Moon_ions_array[i_v, i_zlim_N] = ions_density_at_Moon
+            n_at_Moon_electrons_array[i_v, i_zlim_N] = electrons_density_at_Moon
+
+        units_dict = {
+            "H": f"Rp: {R_p/1e3} km", # Height Scale in Rp
+            "rho_0": "kg.cm^-3", # total mass density in the center of the PS
+            "n_0_ions": "cm^-3", # ions density in the PS
+            "n_0_electrons": "cm^-3", # electrons density in the PS
+            "longitude_TEB": "degrees", # TEB longitude
+            "longitude_MAW": "degrees", # MAW longitude
+            "n_at_Moon_ions": "cm^-3", # ions density at the moon orbit
+            "n_at_Moon_electrons": "cm^-3" # electrons density at the moon orbit
+        }
+                
+    
+    return (H_array, # Height Scale in Rp
+            rho_0_array, #total mass density in the center of the PS in kg.cm^-3
+            n_0_ions_array, # ions density in the PS cm^-3
+            n_0_electrons_array, # electrons density in the PS cm^-3
+            longitude_TEB_array, # TEB longitude
+            longitude_MAW_array, # MAW longitude
+            rho_at_Moon_array, # total mass density at the moon
+            n_at_Moon_ions_array, # ions density at the moon orbit cm^-3
+            n_at_Moon_electrons_array, # electrons density at the moon orbit cm^-3
+            units_dict)

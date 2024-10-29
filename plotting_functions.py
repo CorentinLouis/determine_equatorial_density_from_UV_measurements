@@ -9,6 +9,7 @@ def plot_MFL_and_rho_CS(x_N, y_N, z_N,
                         x_S, y_S, z_S, 
                         mask_CS_N, mask_CS_S,
                         r_0, H, rho_0, disk = False, torus = False,
+                        cb_title = r'$\rho$ (kg.cm$^{-3}$)'
                         ):
 
 
@@ -31,11 +32,11 @@ def plot_MFL_and_rho_CS(x_N, y_N, z_N,
     
     
     # Northern points with color corresponding to rho_N_CS
-    sc1 = plt.scatter(equatorial_vals, z_vals_CS, c=rho_CS_vals*1e-6, cmap='viridis', marker='o',  norm=LogNorm())
+    sc1 = plt.scatter(equatorial_vals, z_vals_CS, c=rho_CS_vals, cmap='viridis', marker='o',  norm=LogNorm())
 
 
     # Add colorbar for rho_N_CS and rho_S_CS
-    plt.colorbar(sc1, label=r'$\rho$ (kg.cm$^{-3}$)')
+    plt.colorbar(sc1, label=cb_title)
 
     circle1 = Circle((0, 0), 1, color='black', fill=True, linewidth=2)
     plt.gca().add_patch(circle1)
