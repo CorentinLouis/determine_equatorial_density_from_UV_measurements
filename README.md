@@ -35,7 +35,7 @@ The script requires specifying key parameters such as:
   - the rotation rate of the moon (default is 0.0098, Callisto's rotation rate;
   - the equator of reference (jovicentric_equator, centrifugal_equator or magnetic_equator; default is centrifugal_equator = True);
   - density model can be choosen between disk and torus (default is torus = True).
-  - - verbose mode can be de-activated using verbose = False;
+  - verbose mode can be de-activated using verbose = False;
 
 
 ```python
