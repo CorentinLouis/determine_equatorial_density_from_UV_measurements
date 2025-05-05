@@ -5,7 +5,7 @@
 
 
 ## Overview
-This pipeline allows to determine the density $\rho$ and the height scale $H$ of the Jovian equatorial density, from the Trans-hemispheric Electron Beam (TEB) and Main Alfvén Wing (MAW) UV spots and the separation longitude separation between them.
+This pipeline allows to determine the density $\rho$ and the height scale $H$ of the Jovian equatorial density, from the Trans-hemispheric Electron Beam (TEB) and Main Alfvén Wing (MAW) UV spots and the separation in longitude separation between them.
 
 
 ## Exemple of Use
