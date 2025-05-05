@@ -7,6 +7,25 @@
 ## Overview
 This pipeline allows to determine the density $\rho$ and the height scale $H$ of the Jovian equatorial density, from the Trans-hemispheric Electron Beam (TEB) and Main Alfvén Wing (MAW) UV spots and the separation in longitude separation between them.
 
+The main steps of the pipeline are the following:
+
+1. We first assume the Plasma Sheet (LS) to be aligned with one of the equator (jovicentric, centrifugal or magnetic). We then assume a plasma sheet height scale H, which gives the values magnetic field line length value $L$ in the Northern ($_N) and in the Southern ($_S$) hemispheres inside and outside of the PS: , $L_\text{N in~PS}, $L_{N~out~PS}$, $L_{S~in~PS}$ and $L_{S~out~PS}$
+
+2. We assume a plasma density $\rho_0$  at the center of the PS and we determine $\rho$ the density along the magnetic field line in the PS using the following density profile equation:
+    $$
+        \rho_i = \rho_0 exp(-\sqrt{\frac{(r_i - r_0)^2 + z_i^2}{H}})$$
+    $$
+
+with $r_0$ the equatorial diameter set at the moons' orbital distance, $r_i = x_i^2+ y_i^2$ the equatorial radial distance, and $z_i$ the altitude above the equator of the position of the measurement point i. 
+
+3. We determine the Alfvén speed velocity $v_A$, based on the calculated $\rho_i$ and the magnetic field amplitude $B_i$  using a magnetic field model. From that, we obtain the values of $t_{TEB}$, $t_{MAW}, $\lambda_{TEB}$, $\lambda_{MAW}$ and therefore $\Delta \lambda{calculated}$.
+
+4. By applying this method on different values of $\rho_0$, we minimize $|\Delta \lambda{calculated}- \Delta \lambda_{observed}| .
+
+5. We then run the same above calculations for different values of the scale height $H$ to minimize $|\lambda_{MAW~calculated} - \lambda_{MAW~observed}|$  and $|\lambda_{TEB~calculated} - \lambda_{TEB~observed}|$ .
+
+
+
 
 ## Exemple of Use
 The script requires specifying key parameters such as:
