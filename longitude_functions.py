@@ -10,7 +10,9 @@ from coordinates_system_transformation import spherical_to_cartesian, cartesian_
 def delta_longitude_calculation_no_CS(r_N, theta_N, phi_N,
                                       r_S, theta_S, phi_S,
                                         rotation_rate_callisto,
-                                        v_electrons
+                                        v_electrons,
+                                        North = True,
+                                        South = False
                                         ):
     c = 3e8 # m/s
     longitude_theorique_callisto = 360-phi_N[-1]
@@ -18,10 +20,14 @@ def delta_longitude_calculation_no_CS(r_N, theta_N, phi_N,
     length_mfl_B_N = length_magnetic_field_line(r_N, theta_N, phi_N, spherical = True, cartesian = False)
     length_mfl_B_S = length_magnetic_field_line(r_S, theta_S, phi_S, spherical = True, cartesian = False)
 
-
-    t_TEB_no_CS = length_mfl_B_S/c + (length_mfl_B_S+length_mfl_B_N)/v_electrons
-    t_MAW_no_CS = length_mfl_B_N/c
-    Delta_t_no_CS = t_TEB_no_CS - t_MAW_no_CS
+    if North:
+        t_TEB_no_CS = length_mfl_B_S/c + (length_mfl_B_S+length_mfl_B_N)/v_electrons
+        t_MAW_no_CS = length_mfl_B_N/c
+        Delta_t_no_CS = t_TEB_no_CS - t_MAW_no_CS
+    elif South:
+        t_TEB_no_CS = length_mfl_B_N/c + (length_mfl_B_N+length_mfl_B_S)/v_electrons
+        t_MAW_no_CS = length_mfl_B_S/c
+        Delta_t_no_CS = t_TEB_no_CS - t_MAW_no_CS
 
     delta_longitude_no_CS = Delta_t_no_CS * rotation_rate_callisto
 
@@ -38,7 +44,8 @@ def delta_longitude_calculation(x_N, y_N, z_N,
                                   v_A_N,
                                   v_A_S,
                                   rotation_rate_callisto,
-                                  delta_L = 1):
+                                  delta_L = 1,
+                                  North = True, South = False):
     """
     All input values needs to be in SI units
     delta_L (default is 1: no modification): modification factor to take into account that the Length of the magnetic field line in the plasma sheet is in fact longer, due to the tilt (theta = atan(Ma)) of the Alfvén wing 
@@ -60,12 +67,17 @@ def delta_longitude_calculation(x_N, y_N, z_N,
     length_mfl_B_S = length_mfl_B_N_CS + length_mfl_B_N_out_CS
     length_mfl_B_N = length_mfl_B_S_CS + length_mfl_B_S_out_CS
 
+    if North:
+        # Time calculation (t_TEB_CS and t_MAW_CS)
+        t_TEB_CS = numpy.sum(delta_length_mfl_B_S_CS / v_A_S[:-1])*delta_L + length_mfl_B_S_out_CS / c  + (length_mfl_B_S + length_mfl_B_N)/ v
 
-    # Time calculation (t_TEB_CS and t_MAW_CS)
-    t_TEB_CS = numpy.sum(delta_length_mfl_B_S_CS / v_A_S[:-1])*delta_L + length_mfl_B_S_out_CS / c  + (length_mfl_B_S + length_mfl_B_N)/ v
+        t_MAW_CS = numpy.sum(delta_length_mfl_B_N_CS / v_A_N[:-1])*delta_L + length_mfl_B_N_out_CS / c
+        
+    elif South:
+        # Time calculation (t_TEB_CS and t_MAW_CS)
+        t_TEB_CS = numpy.sum(delta_length_mfl_B_N_CS / v_A_N[:-1])*delta_L + length_mfl_B_N_out_CS / c  + (length_mfl_B_N + length_mfl_B_S)/ v
 
-
-    t_MAW_CS = numpy.sum(delta_length_mfl_B_N_CS / v_A_N[:-1])*delta_L + length_mfl_B_N_out_CS / c
+        t_MAW_CS = numpy.sum(delta_length_mfl_B_S_CS / v_A_S[:-1])*delta_L + length_mfl_B_S_out_CS / c
 
 
     # Delta time and delta longitude
@@ -73,8 +85,7 @@ def delta_longitude_calculation(x_N, y_N, z_N,
     delta_longitude_MAW = t_MAW_CS * rotation_rate_callisto
     delta_longitude_TEB = t_TEB_CS * rotation_rate_callisto
     delta_longitude_CS_MAW_TEB = Delta_t_CS*rotation_rate_callisto
-    
-    
+
     return t_MAW_CS, t_TEB_CS, Delta_t_CS, delta_longitude_MAW, delta_longitude_TEB, delta_longitude_CS_MAW_TEB
 
 
@@ -87,7 +98,8 @@ def optimize_rho_0(z_lim_N, r_0, H, rho_0_volumetric_first_guess,
                    mask_CS_N, mask_CS_S,
                    v, rotation_rate_callisto, 
                    delta_longitude_observed, disk=False, torus=False,
-                   delta_L = 1):
+                   delta_L = 1, 
+                   North = True, South = False):
     # Define the inner objective function for rho_0 minimization
     def objective_function_rho_0_from_delta_longitude_inner(rho_0, r_0, H,
                                        x_N, y_N, z_N, 
@@ -96,7 +108,8 @@ def optimize_rho_0(z_lim_N, r_0, H, rho_0_volumetric_first_guess,
                                        mask_CS_N, mask_CS_S,
                                        v, rotation_rate_callisto, delta_longitude_observed,
                                        disk = False, torus = False,
-                                       delta_L = 1):
+                                       delta_L = 1,
+                                       North = True, South = False):
 
         #if numpy.any(mask_CS_N):
         rho_CS_N = rho_z(x_N[mask_CS_N], y_N[mask_CS_N], z_N[mask_CS_N], r_0, H, rho_0, disk=disk, torus = torus)
@@ -120,7 +133,8 @@ def optimize_rho_0(z_lim_N, r_0, H, rho_0_volumetric_first_guess,
                                                                                     v_A_N,
                                                                                     v_A_S,
                                                                                     rotation_rate_callisto,
-                                                                                    delta_L = delta_L)
+                                                                                    delta_L = delta_L,
+                                                                                    North = North, South = South)
 
 
 
@@ -139,7 +153,8 @@ def optimize_rho_0(z_lim_N, r_0, H, rho_0_volumetric_first_guess,
                 B_N, B_S,
                 mask_CS_N, mask_CS_S,
                 v, rotation_rate_callisto,
-                delta_longitude_observed, disk, torus, delta_L),
+                delta_longitude_observed, disk, torus, delta_L,
+                North, South),
         method='Nelder-Mead',
         tol=1e-6
     )
@@ -156,7 +171,7 @@ def objective_function_rho_0_from_delta_longitude(rho_0, r_0, H,
                                        mask_CS_N, mask_CS_S,
                                        v, rotation_rate_callisto, delta_longitude_observed,
                                        disk = False, torus = False,
-                                       delta_L = 1):
+                                       delta_L = 1, North = True, South = False):
 
 
 
@@ -178,7 +193,8 @@ def objective_function_rho_0_from_delta_longitude(rho_0, r_0, H,
                                                                                 v_A_N,
                                                                                 v_A_S,
                                                                                 rotation_rate_callisto,
-                                                                                delta_L=delta_L)
+                                                                                delta_L=delta_L,
+                                                                                North = North, South = South)
 
 
 
@@ -198,7 +214,7 @@ def objective_function_zlimN_from_longitude(z_lim_N, r_0, rho_0_volumetric_first
                                            R_p = 71492e3,
                                            MAW=False, TEB=False, disk=False, torus=False,
                                            jovicentric_equator=False, centrifugal_equator=False, magnetic_equator=False,
-                                           delta_L = 1):
+                                           delta_L = 1, North = True, South = False):
 
     m_e = 9.109e-31 # kg
     delta_longitude_observed = numpy.abs(longitude_observed_MAW-longitude_observed_TEB)
@@ -242,13 +258,15 @@ def objective_function_zlimN_from_longitude(z_lim_N, r_0, rho_0_volumetric_first
                                                 x_S, y_S, z_S, B_S,
                                                 mask_CS_N, mask_CS_S,
                                                 v, rotation_rate_callisto,
-                                                delta_longitude_observed, disk=disk, torus=torus, delta_L = delta_L)
+                                                delta_longitude_observed, disk=disk, torus=torus, delta_L = delta_L,
+                                                North = North, South = South)
 
     # Calculate the longitudes using the optimized rho_0
     longitude_MAW, longitude_TEB = longitude_MAW_TEB_calculation(
         x_N, y_N, z_N, B_N, x_S, y_S, z_S, B_S, mask_CS_N, mask_CS_S, 
         r_0, H, rho_0_volumetric_optimized, v, rotation_rate_callisto, 
-        longitude_instantaneous, disk=disk, torus=torus, delta_L= delta_L
+        longitude_instantaneous, disk=disk, torus=torus, delta_L= delta_L,
+        North = North, South = South
     )
 
     # Determine which longitude to compare
@@ -271,7 +289,8 @@ def longitude_MAW_TEB_calculation(x_N, y_N, z_N, B_total_N,
                                       longitude_callisto,
                                       disk = False,
                                       torus = False,
-                                      delta_L = 1):
+                                      delta_L = 1,
+                                      North = True, South = False):
 
     rho_CS_N_volumetric = rho_z(x_N[mask_CS_N], y_N[mask_CS_N], z_N[mask_CS_N], r_0, H, rho_0_volumetric, disk=disk, torus = torus)
     rho_CS_S_volumetric = rho_z(x_S[mask_CS_S], y_S[mask_CS_S], z_S[mask_CS_S], r_0, H, rho_0_volumetric, disk=disk, torus = torus)
@@ -289,7 +308,8 @@ def longitude_MAW_TEB_calculation(x_N, y_N, z_N, B_total_N,
                                     v_A_N,
                                     v_A_S,
                                     rotation_rate_callisto, 
-                                    delta_L = delta_L)
+                                    delta_L = delta_L,
+                                    North = North, South = South)
 
 
     # Delta time and delta longitude
