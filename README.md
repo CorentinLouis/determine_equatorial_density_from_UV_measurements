@@ -1,4 +1,4 @@
-# Determining the Jovian equatorial density from UV measurements of the Galilean moons' footprint
+# Determining the Jovian equatorial density from UV measurements of the Galilean moons' footprints
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/876014209.svg)](https://zenodo.org/badge/latestdoi/876014209)
