@@ -74,7 +74,7 @@ The script requires specifying key parameters such as:
 
 ## Example of Use: Reproducing Rabia et al. (2025) Results
 
-The `Rabia_2024_Nature.ipynb` file is a Jupyter notebook that provides an example of how to reproduce the results in Jonas et al. (2025).
+The `Rabia_2025_Nature.ipynb` file is a Jupyter notebook that provides an example of how to reproduce the results in Jonas et al. (2025).
 In this notebook, two methods are provided:
 1. The first one takes different values of $H$ as inputs and provides the best $\rho$ results for each $H$ that minimize the TEB and MAW longitudes, and the longitudinal separation between them.
 2. The second one minimizes the longitudes of the TEB and MAW spots, as well as their separation, across different $H$ and $\rho$ values to find the best fit.
