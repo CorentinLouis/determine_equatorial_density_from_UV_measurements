@@ -19,7 +19,7 @@ version: 1.0.0
 date-released: 2025-05-06
 url: "https://github.com/CorentinLouis/determine_equatorial_density_from_UV_measurements/"
 abstract: |
-  This pipeline allows to determine the density $\rho$ and the height scale H of the Jovian equatorial density, from the Trans-hemispheric Electron Beam (TEB) and Main Alfvén Wing (MAW) UV spots and the separation in longitude separation between them.
+  This pipeline allows to determine the density ρ and the height scale H of the Jovian equatorial density, from the Trans-hemispheric Electron Beam (TEB) and Main Alfvén Wing (MAW) UV spots and the separation in longitude separation between them.
 keywords:
   - "Magnetosphere"
   - "Jupiter"
