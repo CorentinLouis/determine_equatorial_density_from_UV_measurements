@@ -25,6 +25,8 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
                                    R_p = 71492e3,
                                    delta_L =1,
                                    no_CS_calculation = False,
+                                   North = True,
+                                   South = False 
                                    ):
 
     m_e = 9.109e-31 # kg
@@ -85,7 +87,9 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
                     delta_longitude_no_CS) = delta_longitude_calculation_no_CS(r_N, theta_N, phi_N,
                                                                                r_S, theta_S, phi_S,
                                                                                rotation_rate,
-                                                                               v)
+                                                                               v,
+                                                                               North = North,
+                                                                               South = South)
                 if verbose:
                     print(f'Associated values without Current Sheet: \n'
                             +r'λ$_{theorique}$ = ' + f'{360-phi_N[0]}°'+ '\n'
@@ -107,7 +111,7 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
                                 B_total_N, B_total_S,
                                 mask_CS_N, mask_CS_S,
                                 v, rotation_rate, delta_longitude_observed,
-                                disk, torus, delta_L),
+                                disk, torus, delta_L, North, South),
                         method='Nelder-Mead',                         # Optimization method
                         tol=1e-6                                      # Tolerance for convergence
                         )
@@ -128,7 +132,8 @@ def density_and_scale_height_of_CS_calculation(r_N, theta_N, phi_N, B_total_N,
                                                                         v,
                                                                         rotation_rate,
                                                                         360-phi_N[0],
-                                                                        disk = disk, torus = torus, delta_L= delta_L)
+                                                                        disk = disk, torus = torus, delta_L= delta_L,
+                                                                        North = North, South = South)
             delta_longitude_CS_MAW_TEB = numpy.abs(longitude_TEB-longitude_MAW)
 
             m_amu_ions, m_kg_ions, q_mean_ions = (single_ion_population_mass(r_0/R_p))
