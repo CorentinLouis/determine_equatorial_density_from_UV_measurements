@@ -37,8 +37,8 @@ The script requires specifying key parameters such as:
   - the rotation rate of the moon (`rotation_rate`; default is $0.0098$, Callisto's rotation rate);
   - the equator of reference (`jovicentric_equator`, `centrifugal_equator`, or `magnetic_equator`; default is `centrifugal_equator = True`);
   - density model can be chosen between `disk` and `torus` (default is `torus = True`);
-  - Uncertainties can be added using the $\Delta L$ (`delta_L`) input. These uncertainties are based on the tilt angle of the Alfvén wings, which increases the length of the magnetic field line in the plasma sheet as $L = L_\text{in PS} \times \Delta L$, with $\Delta L= \frac{1}{cos \theta}, with $\theta = atan(M_A)$, with $M_A$ the Mach Alfvén number.
-
+  - uncertainties can be added using the $\Delta L$ (`delta_L`) input. These uncertainties are based on the tilt angle of the Alfvén wings, which increases the length of the magnetic field line in the plasma sheet as $L = L_\text{in PS} \times \Delta L$, with $\Delta L= \frac{1}{cos \theta}, with $\theta = atan(M_A)$, with $M_A$ the Mach Alfvén number;
+  - hemisphere where the footprints were observed can be chosen with the `North` and `South` option (default is `North=True`, `South=False`);
   - verbose mode can be deactivated using `verbose = False`.
 
 ```python
@@ -67,7 +67,9 @@ The script requires specifying key parameters such as:
         verbose=True,
         disk=False,
         torus=True,
-        delta_L=delta_L
+        delta_L=delta_L,
+        North=North,
+        South=South
 )
 ```
 
