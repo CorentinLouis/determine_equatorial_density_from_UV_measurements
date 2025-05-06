@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Determining the Jovian equatorial density from UV measurements of the Galilean moons' footprints"
+authors:
+  - family-names: "Louis"
+    given-names: "Corentin K."
+    orcid: "0000-0002-9552-8822"
+    affiliation: "https://ror.org/017zz7s54"
+  - family-names: "Rabia"
+    given-names: "Jonas"
+    orcid: "0000-0003-1429-9122"
+    affiliation: "https://ror.org/05hm2ja81"
+  - family-names: "Prangé"
+    given-names: "Renée"
+    orcid: "0000-0001-8809-4563"
+    affiliation: "https://ror.org/017zz7s54"
+license: "MIT"
+version: 1.0.0
+date-released: 2025-05-06
+url: "https://github.com/CorentinLouis/determine_equatorial_density_from_UV_measurements/"
+abstract: |
+  This pipeline allows to determine the density ρ and the height scale H of the Jovian equatorial density, from the Trans-hemispheric Electron Beam (TEB) and Main Alfvén Wing (MAW) UV spots and the separation in longitude separation between them.
+keywords:
+  - "Magnetosphere"
+  - "Jupiter"
+  - "UV satellite footprints"
+  - "Data Processing"
+  - "Data Analysis"
+
+
