@@ -19,7 +19,6 @@
     "license": "MIT",
     "title": "Determining the Jovian equatorial density from UV measurements of the Galilean moons' footprint",
     "description": "  This pipeline allows to determine the density $\rho$ and the height scale H of the Jovian equatorial density, from the Trans-hemispheric Electron Beam (TEB) and Main Alfvén Wing (MAW) UV spots and the separation in longitude separation between them.",
-  
     "keywords": [
        "Magnetosphere",
         "Jupiter",
