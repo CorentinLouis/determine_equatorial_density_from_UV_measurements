@@ -28,7 +28,7 @@ The main steps of the pipeline are the following:
 The main function to be used is ```density_and_scale_height_of_CS_calculation```.
 
 The script requires specifying key parameters such as:
-  - a magnetic field model that gives the magnetic field values along the magnetic field line in the North (`r_N`, `theta_N`, `phi_N`, `B_total_N`) and South (`r_S`, `theta_S`, `phi_S`, `B_total_S`). Distance values need to be in Jovian radii. Magnetic field values need to be in Tesla;
+  - a magnetic field model that gives the magnetic field values along the magnetic field line connected to the Galilean moon, in the North (`r_N`, `theta_N`, `phi_N`, `B_total_N`) and South (`r_S`, `theta_S`, `phi_S`, `B_total_S`). Distance values need to be in Jovian radii. Magnetic field values need to be in Tesla;
   - an array of electron energies to be tested (`E_array`);
   - specific scale height values $H$ for the Current Sheet to be tested (`z_lim_N_array`);
   - the distance along the chosen equator that will be taken as reference (`r_0`, in planetary Radius)
